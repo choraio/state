@@ -1,0 +1,78 @@
+@prefix rdfs: <https://www.w3.org/2000/01/rdf-schema#> .
+@prefix sc: <https://schema.chora.io/statechart#> .
+@prefix sh: <https://www.w3.org/ns/shacl#> .
+@prefix xsd: <https://www.w3.org/2001/XMLSchema#> .
+
+sc:StateShape
+    a sh:NodeShape ;
+    sh:class sc:State ;
+    sh:property
+        [
+            sh:path sc:transition ;
+            sh:node sc:TransitionShape ;
+        ]
+.
+
+sc:TransitionShape
+    a sh:NodeShape ;
+    sh:property
+        [
+            sh:path sc:target ;
+            sh:node sh:NodeShape ;
+        ] ;
+    sh:property
+        [
+            sh:path sc:on ;
+            sc:or ( [ sh:node sc:EventSelectorShape ] )
+        ] ;
+    sh:property
+        [
+            sh:path sc:condition ;
+            sh:or ( [ sh:node sc:SparqlAskConditionShape ] [sh:node sc:ShaclValidateConditionShape ] )
+        ] ;
+    sh:property
+        [
+            sh:path sc:action ;
+            sh:or ( [ sh:node sc:ConstructActionShape ] [ sh:node sc:ExecuteActionShape ] )
+        ]
+.
+
+sc:EventSelectorShape a sh:NodeShape ;
+    sh:property
+        [
+            sh:path sc:event ;
+            sh:description "A triggered event.";
+        ]
+.
+
+sc:SparqlAskConditionShape a sh:NodeShape ;
+    sh:property
+        [
+            sh:path sc:ask ;
+            sh:description "A SPARQL ASK query describing the condition." ;
+        ]
+.
+
+sc:ShaclValidateConditionShape a sh:NodeShape ;
+    sh:property
+        [
+            sh:path sc:validate ;
+            sh:description "The IRI of the SHACL graph to validate against." ;
+        ]
+.
+
+sc:ConstructActionShape a sh:NodeShape ;
+    sh:property
+        [
+            sh:path sc:construct ;
+            sh:description "A SPARQL CONSTRUCT query describing a document to be generated." ;
+        ]
+.
+
+sc:ExecuteActionShape a sh:NodeShape ;
+    sh:property
+        [
+            sh:path sc:exec ;
+            sh:description "A SPARQL CONSTRUCT query describing a message to be executed." ;
+        ]
+.
